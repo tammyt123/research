@@ -1,3 +1,16 @@
+## setup
+wd <- "C:/Users/TTAN/Documents/git/orise_research"
+setwd(wd)
+
+list.of.packages <- c("raster", "sf", "sp","ncdf4","rgeos","dplyr","ggplot2","plotly",
+                      "leaflet","tigris","lattice","rgdal","zoo","tidyr","stringr")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages, repos = "http://cran.rstudio.com/")
+lapply(list.of.packages, library, character.only = TRUE)
+
+## declare where tiger shapefiles are stored via tigris
+tigris_cache_dir(paste0(wd,"/data/tiger"))
+options(tigris_use_cache = TRUE)
 
 ## load gridded data
 load("data/processed_data/dietal_annual_dc_gridded_pm25.rda")
@@ -43,10 +56,12 @@ plot(tracts_proj$geometry[1,])
 tract_intersections <- list()
 tract_intersections[1] <- st_intersection(tracts_proj$geometry[1,], buffer)
 
-st_intersection(tracts_proj$geometry[1,], buffer) # intersection
+st_intersection(tracts_proj$geometry[1,], buffer) # intersection, just looking at one tract
+plot(st_intersection(tracts_proj$geometry[1,], buffer))
+plot(tracts_proj$geometry[1,], add = T)
 length(st_intersection(tracts_proj$geometry[1,], buffer)) # number of intersections with monitors
 st_area(st_intersection(tracts_proj$geometry[1,], buffer)) #area of each intersection -- could use as weighting?
 
-for (i in 1:nrow(tracts_proj)) {
-  tract_intersections[i] <- st_intersection(tracts_proj$geometry[i,], buffer$geometry)
-}
+# for (i in 1:nrow(tracts_proj)) {
+#   tract_intersections[i] <- st_intersection(tracts_proj$geometry[i,], buffer$geometry)
+# }
